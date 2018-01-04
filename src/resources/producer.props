@@ -1,0 +1,4 @@
+bootstrap.servers=localhost:9092
+block.on.buffer.full=true
+batch.size=16384
+auto.create.topics.enable=true
