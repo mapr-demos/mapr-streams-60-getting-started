@@ -30,19 +30,17 @@ public class AkkaConsumer {
 
     public static void main(String[] args) {
         Runtime runtime = Runtime.getRuntime();
-        if (args.length < 3) {
+        if (args.length != 2) {
             System.err.println("ERROR: You must specify a stream:topic to consume data from.");
             System.err.println("USAGE:\n" +
-                    "\tjava -cp ./mapr-streams-study-1.0-jar-with-dependencies.jar com.mapr.examples.Run akkaconsumer stream:topic table\n" +
+                    "\tjava -cp ./mapr-streams-study-1.0-jar-with-dependencies.jar com.mapr.examples.AkkaConsumer stream:topic table\n" +
                     "Example:\n" +
-                    "\tjava -cp ./mapr-streams-study-1.0-jar-with-dependencies.jar com.mapr.examples.Run akkaconsumer /user/mapr/mystream:mytopic /tmp/mytable");
+                    "\tjava -cp ./mapr-streams-study-1.0-jar-with-dependencies.jar com.mapr.examples.AkkaConsumer /user/mapr/mystream:mytopic /tmp/mytable");
             runtime.exit(1);
         }
 
-        String topic = "mystream:mytopic";
-        if (args.length > 1) topic = args[1];
-        String table_path = "/tmp/mytable";
-        if (args.length > 2) table_path = args[2];
+        String topic = args[0];
+        String table_path = args[1];
 
         System.out.println("Subscribed to: "+ topic);
         configureConsumer();

@@ -12,24 +12,23 @@ public class AkkaProducer {
     public static KafkaProducer producer;
 
     public static void main(String[] args) throws IOException {
-
-        if (args.length != 2 && args.length != 3) {
+        Runtime runtime = Runtime.getRuntime();
+        if (args.length != 2) {
             System.err.println("USAGE:\n" +
-                    "\tjava -cp ./mapr-streams-study-1.0-jar-with-dependencies.jar com.mapr.examples.Run akkaproducer stream:topic input_json_file\n" +
+                    "\tjava -cp ./mapr-streams-study-1.0-jar-with-dependencies.jar com.mapr.examples.AkkaProducer stream:topic input_json_file\n" +
                     "Example:\n" +
-                    "\tjava -cp ./mapr-streams-study-1.0-jar-with-dependencies.jar com.mapr.examples.Run akkaproducer /user/mapr/mystream:mytopic input_data.json");
-
+                    "\tjava -cp ./mapr-streams-study-1.0-jar-with-dependencies.jar com.mapr.examples.AkkaProducer /user/mapr/mystream:mytopic input_data.json");
+            runtime.exit(1);
         }
 
-        String topic = "mystream:mytopic";
-        if (args.length > 1) topic = args[1];
+        String topic = args[0];
         System.out.println("Publishing to topic: "+ topic);
         configureProducer();
 
         BufferedReader reader = null;
         if (args.length == 3) {
-            System.out.println("Opening file " + args[2]);
-            File f = new File(args[2]);
+            System.out.println("Opening file " + args[1]);
+            File f = new File(args[1]);
             FileReader fr = new FileReader(f);
             reader = new BufferedReader(fr);
         } else {

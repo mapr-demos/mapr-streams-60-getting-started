@@ -13,23 +13,23 @@ public class BasicProducer {
     public static KafkaProducer producer;
 
     public static void main(String[] args) throws IOException {
-
-        if (args.length != 2 && args.length != 3) {
+        Runtime runtime = Runtime.getRuntime();
+        if (args.length < 1) {
             System.err.println("USAGE:\n" +
-                    "\tjava -cp ./mapr-streams-study-1.0-jar-with-dependencies.jar com.mapr.examples.Run producer stream:topic [source data file] \n" +
+                    "\tjava -cp ./mapr-streams-study-1.0-jar-with-dependencies.jar com.mapr.examples.BasicProducer stream:topic [source data file] \n" +
                     "Example:\n" +
-                    "\tjava -cp ./mapr-streams-study-1.0-jar-with-dependencies.jar com.mapr.examples.Run producer /user/mapr/mystream:mytopic input_data.json");
-
+                    "\tjava -cp ./mapr-streams-study-1.0-jar-with-dependencies.jar com.mapr.examples.BasicProducer /user/mapr/mystream:mytopic [input_data.json]");
+            runtime.exit(1);
         }
 
-        String topic = "mystream:mytopic";
-        if (args.length > 1) topic = args[1];        System.out.println("Publishing to topic: "+ topic);
+        String topic = args[0];
+        System.out.println("Publishing to topic: "+ topic);
         configureProducer();
 
         BufferedReader reader = null;
         if (args.length == 3) {
-            System.out.println("Opening file " + args[2]);
-            File f = new File(args[2]);
+            System.out.println("Opening file " + args[1]);
+            File f = new File(args[1]);
             FileReader fr = new FileReader(f);
             reader = new BufferedReader(fr);
         } else {

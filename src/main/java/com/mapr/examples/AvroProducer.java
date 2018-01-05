@@ -27,16 +27,16 @@ public class AvroProducer {
                 + "]}";
 
         public static void main(String[] args) throws IOException {
-            if (args.length != 2 && args.length != 3) {
+            Runtime runtime = Runtime.getRuntime();
+            if (args.length != 1) {
                 System.err.println("USAGE:\n" +
-                        "\tjava -cp ./mapr-streams-study-1.0-jar-with-dependencies.jar com.mapr.examples.Run avroproducer stream:topic \n" +
+                        "\tjava -cp ./mapr-streams-study-1.0-jar-with-dependencies.jar com.mapr.examples.AvroProducer stream:topic \n" +
                         "Example:\n" +
-                        "\tjava -cp ./mapr-streams-study-1.0-jar-with-dependencies.jar com.mapr.examples.Run avroproducer /user/mapr/mystream:mytopic");
-
+                        "\tjava -cp ./mapr-streams-study-1.0-jar-with-dependencies.jar com.mapr.examples.AvroProducer /user/mapr/mystream:mytopic");
+                runtime.exit(1);
             }
 
-            String topic = "mystream:mytopic";
-            if (args.length > 1) topic = args[1];
+            String topic = args[0];
             System.out.println("Publishing to topic: "+ topic);
             configureProducer();
 

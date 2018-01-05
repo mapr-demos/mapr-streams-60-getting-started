@@ -25,19 +25,17 @@ public class PojoConsumer {
     public static KafkaConsumer consumer;
 
     public static void main(String[] args) {
-
         Runtime runtime = Runtime.getRuntime();
-        if (args.length < 2) {
+        if (args.length != 1) {
             System.err.println("ERROR: You must specify a stream:topic to consume data from.");
             System.err.println("USAGE:\n" +
-                    "\tjava -cp ./mapr-streams-study-1.0-jar-with-dependencies.jar com.mapr.examples.Run pojoconsumer [stream:topic]\n" +
+                    "\tjava -cp ./mapr-streams-study-1.0-jar-with-dependencies.jar com.mapr.examples.PojoConsumer stream:topic\n" +
                     "Example:\n" +
-                    "\tjava -cp ./mapr-streams-study-1.0-jar-with-dependencies.jar com.mapr.examples.Run pojoconsumer /user/mapr/mystream:mytopic");
-
+                    "\tjava -cp ./mapr-streams-study-1.0-jar-with-dependencies.jar com.mapr.examples.PojoConsumer /user/mapr/mystream:mytopic");
+            runtime.exit(1);
         }
 
-        String topic = "mystream:mytopic";
-        if (args.length > 1) topic = args[1];
+        String topic = args[0];
         System.out.println("Subscribed to : "+ topic);
 
         configureConsumer();

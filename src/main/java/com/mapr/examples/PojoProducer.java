@@ -26,17 +26,16 @@ public class PojoProducer {
     public static KafkaProducer producer;
 
     public static void main(String[] args) throws IOException {
-
-        if (args.length != 2 && args.length != 3) {
+        Runtime runtime = Runtime.getRuntime();
+        if (args.length != 1) {
             System.err.println("USAGE:\n" +
-                    "\tjava -cp ./mapr-streams-study-1.0-jar-with-dependencies.jar com.mapr.examples.Run pojoproducer stream:topic\n" +
+                    "\tjava -cp ./mapr-streams-study-1.0-jar-with-dependencies.jar com.mapr.examples.PojoProducer stream:topic\n" +
                     "Example:\n" +
-                    "\tjava -cp ./mapr-streams-study-1.0-jar-with-dependencies.jar com.mapr.examples.Run pojoproducer /user/mapr/mystream:mytopic");
-
+                    "\tjava -cp ./mapr-streams-study-1.0-jar-with-dependencies.jar com.mapr.examples.PojoProducer /user/mapr/mystream:mytopic");
+            runtime.exit(1);
         }
 
-        String topic = "mystream:mytopic";
-        if (args.length > 1) topic = args[1];
+        String topic = args[0];
         System.out.println("Publishing to topic: "+ topic);
         configureProducer();
 
@@ -66,12 +65,12 @@ public class PojoProducer {
                         new Callback() {
                             public void onCompletion(RecordMetadata metadata, Exception e) {
                                 long current_time = System.nanoTime();
-                                
-                                System.out.printf("\tpojo id = '%s'\n" +
-                                                "\t\tdelay = %.2f\n" +
-                                                "\t\ttopic = %s\n" +
-                                                "\t\tpartition = %d\n" +
-                                                "\t\toffset = %d\n",
+
+                                System.out.printf("pojo id = '%s'\n" +
+                                                "\tdelay = %.2f\n" +
+                                                "\ttopic = %s\n" +
+                                                "\tpartition = %d\n" +
+                                                "\toffset = %d\n",
                                         person1.getId(),
                                         (current_time - Long.valueOf(key)) / 1e9,
                                         metadata.topic(),
