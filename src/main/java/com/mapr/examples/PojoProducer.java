@@ -35,7 +35,8 @@ public class PojoProducer {
 
         }
 
-        String topic =  args[1] ;
+        String topic = "mystream:mytopic";
+        if (args.length > 1) topic = args[1];
         System.out.println("Publishing to topic: "+ topic);
         configureProducer();
 
@@ -65,9 +66,7 @@ public class PojoProducer {
                         new Callback() {
                             public void onCompletion(RecordMetadata metadata, Exception e) {
                                 long current_time = System.nanoTime();
-
-                                System.out.print(".");
-
+                                
                                 System.out.printf("\tpojo id = '%s'\n" +
                                                 "\t\tdelay = %.2f\n" +
                                                 "\t\ttopic = %s\n" +

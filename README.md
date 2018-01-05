@@ -27,6 +27,11 @@ When data structures are communicated through MapR Streams they must be converte
 The MapR Container For Developers is a docker image that enables you to quickly deploy a single-node MapR instance on a workstation. It is designed to give software developers an easy way to experiment with the APIs for MapR Streams, MapR-DB, and Spark without the burden of connecting to a real cluster. Installation steps can be found [**here**](https://maprdocs.mapr.com/home/MapRContainerDevelopers/MapRContainerDevelopersOverview.html). The installation basically consists of running the following commands on your Mac:
 
 ```
+$ wget http://package.mapr.com/releases/v6.0.0/mac/mapr-client-6.0.0.20171109191718.GA-1.x86_64.tar.gz -P ~/Downloads/
+$ sudo mv ~/Downloads/mapr-client-6.0.0.20171109191718.GA-1.x86_64.tar.gz /opt
+$ cd /opt
+$ sudo tar xvfz mapr-client-6.0.0.20171107171328.GA-1.x86_64.tar.gz
+$ cd ~/
 $ wget https://raw.githubusercontent.com/mapr-demos/mapr-db-60-getting-started/master/mapr_devsandbox_container_setup.sh
 $ chmod +x mapr_devsandbox_container_setup.sh
 $ ./mapr_devsandbox_container_setup.sh

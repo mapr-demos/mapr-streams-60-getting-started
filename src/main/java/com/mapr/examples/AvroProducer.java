@@ -35,7 +35,8 @@ public class AvroProducer {
 
             }
 
-            String topic =  args[1] ;
+            String topic = "mystream:mytopic";
+            if (args.length > 1) topic = args[1];
             System.out.println("Publishing to topic: "+ topic);
             configureProducer();
 

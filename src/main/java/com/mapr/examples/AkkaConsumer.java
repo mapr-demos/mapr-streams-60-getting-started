@@ -39,8 +39,10 @@ public class AkkaConsumer {
             runtime.exit(1);
         }
 
-        String topic =  args[1];
-        String table_path = args[2];
+        String topic = "mystream:mytopic";
+        if (args.length > 1) topic = args[1];
+        String table_path = "/tmp/mytable";
+        if (args.length > 2) table_path = args[2];
 
         System.out.println("Subscribed to: "+ topic);
         configureConsumer();

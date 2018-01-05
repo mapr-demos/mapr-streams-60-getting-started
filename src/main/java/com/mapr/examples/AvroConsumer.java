@@ -37,7 +37,8 @@ public class AvroConsumer {
 
         }
 
-        String topic =  args[1] ;
+        String topic = "mystream:mytopic";
+        if (args.length > 1) topic = args[1];
         System.out.println("Subscribed to : "+ topic);
 
         configureConsumer();
