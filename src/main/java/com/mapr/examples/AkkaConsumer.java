@@ -21,6 +21,9 @@ import org.ojai.store.DriverManager;
 public class AkkaConsumer {
     // Declare a new consumer.
     public static KafkaConsumer consumer;
+    private static long ThroughputCounter = 0;
+    private static long ThroughputCounterTemp = 0;
+    private static long MessageCounter = 0;
     private static final ActorSystem system = ActorSystem.create("MyActorSystem");
     private static final ActorRef parser = system.actorOf(Props.create(AkkaPersister.Parser.class), "parser");
 
@@ -55,7 +58,8 @@ public class AkkaConsumer {
                 admin.createTable(AkkaPersister.TABLE_PATH).close();
             }
         }
-        System.out.println("Persisting to table: "+ AkkaPersister.TABLE_PATH);
+        System.out.println("Messages will be saved to table: "+ AkkaPersister.TABLE_PATH);
+        System.out.println("Waiting for messages on stream...");
 
         List<String> topics = new ArrayList<String>();
         topics.add(topic);
@@ -73,12 +77,15 @@ public class AkkaConsumer {
         List<String> akka_buffer = new ArrayList<>();
 
         try {
+            double t0 = System.nanoTime() * 1e-9;
+            double t = t0;
             while (true) {
                 // Request unread messages from the topic.
                 ConsumerRecords<String, String> records = consumer.poll(pollTimeOut);
                 if (records.count() > 0) {
                     for (ConsumerRecord<String, String> record : records) {
                         akka_buffer.add(record.value());
+                        MessageCounter++;
                     }
                     if (akka_buffer.size() >= akka_buffer_size) {
                         for (String msg : akka_buffer) {
@@ -91,12 +98,12 @@ public class AkkaConsumer {
                     records_processed += records.count();
 
                     // Print performance stats once per second
-                    if ((Math.floor(System.nanoTime() - startTime)/1e9) > last_update) {
-                        // Ask the actor to print status
-                        inbox.send(parser, new AkkaPersister.Status());
-                        last_update++;
-                        System.out.printf("Consumer ");
-                        PerfMonitor.print_status(records_processed, startTime);
+                    double dt = System.nanoTime() * 1e-9 - t;
+                    if (dt > 1) {
+                        ThroughputCounter = MessageCounter - ThroughputCounterTemp;
+                        System.out.printf("Total received: %d, %.02f msgs/sec\n", MessageCounter, ThroughputCounter / (System.nanoTime() * 1e-9 - t0));
+                        t = System.nanoTime() * 1e-9;
+                        ThroughputCounterTemp = ThroughputCounter;
                     }
                 }
 

@@ -41,18 +41,7 @@ The rest of this guide will assume you're running the MapR Container For Develop
 
 ## Step 1: Verify the MapR cluster is working
 
-It can take a few minutes for the cluster to start, so connect to the container with `ssh root@localhost -p 2222` and password "mapr", then make sure the following commands work:
-
-```
-/opt/mapr/bin/hadoop fs -ls /tmp
-/opt/mapr/bin/mapr dbshell
-/opt/mapr/hadoop/hadoop-2.7.0/bin/hadoop jar /opt/mapr/hadoop/hadoop-2.7.0/share/hadoop/mapreduce/hadoop-mapreduce-examples-2.7.0-mapr-1710.jar pi 1 1
-/opt/mapr/drill/drill-1.11.0/bin/sqlline -u "jdbc:drill:drillbit=localhost" -n mapr
-```
-
-Finally, open `https://localhost:8443`, login with username mapr and password mapr. You don't need to configure anything, just make sure you can login.
-
-If the container is taking longer than a 5 minutes to start, then you probably need to allocate more memory to Docker (try 8GB) or otherwise decrease memory pressure by closing some apps.
+It can take up to 5 minutes for the cluster to start. You'll know it's finished starting if you can connect to the container with `ssh root@localhost -p 2222` using password "mapr" and the /apps/ cluster directory is shown by the command, `/opt/mapr/bin/hadoop fs -ls /apps`. If the container is taking longer than a 5 minutes to start, then you probably need to allocate more memory to Docker (try 8GB) or otherwise decrease memory pressure by closing some apps.
 
 ## Step 2: Create a stream and topic
 
@@ -132,7 +121,7 @@ The two examples we just discussed for streaming Avro encoded data and POJOs are
 
 This example shows how to stream JSON data and persist each message to MapR-DB. Akka is used to asynchronously parse and save the streamed JSON messages to MapR-DB. This way we can avoid blocking stream reads when we're parsing and persisting messages, which is important since we can read from a stream faster than we can persist to disk. Unlike to previous two examples, we're encoding the streamed JSON data as Strings (not Byte arrays). The Akka message processor converts each message to a JSON document using the Open JSON Application Interface (OJAI) and persists that to MapR-DB JSON tables.
 
-This example is pretty cool, because it's showing how to process streaming messages asynchronously using Akka.  It's also cool because it shows how you can stream rich data structures and process them without schema restrictions.  Here's how to run the producer and consumer:
+This example is pretty cool, because it shows how consumers can process streaming messages asynchronously using Akka.  It's also cool because it shows how you can stream rich data structures (i.e. JSON) and process them without schema restrictions. Run the AkkaProducer with any JSON file, and the consumer will save those records to a MapR-DB JSON table. Here's how to run the producer and consumer:
 
 ```
 wget https://raw.githubusercontent.com/mapr-demos/customer360/master/clickstream/data/clickstream_data.json
@@ -159,7 +148,7 @@ For more information about using MapR-DB in the MapR developer sandbox, check ou
 
 ## Step 8. Stream JSON data and consume with Spark Streaming
 
-Run this on your Mac:
+Here's how to run Run this on your Mac:
 ```
 java -cp target/mapr-streams-study-1.0-jar-th-dependencies.jar com.mapr.examples.ClickstreamConsumer /apps/mystream:mytopic
 ```

@@ -26,7 +26,7 @@ public class AkkaProducer {
         configureProducer();
 
         BufferedReader reader = null;
-        if (args.length == 3) {
+        if (args.length == 2) {
             System.out.println("Opening file " + args[1]);
             File f = new File(args[1]);
             FileReader fr = new FileReader(f);
