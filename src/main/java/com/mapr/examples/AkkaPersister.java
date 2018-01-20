@@ -31,7 +31,7 @@ public class AkkaPersister {
             return receiveBuilder()
                     .match(Status.class, message -> {
                         System.out.printf("Akka ");
-                        System.out.printf("Total persisted: %d\n", MessageCounter);
+                        System.out.printf("Total persisted: %d\n", records_processed);
                     })
                     .match(ParseMe.class, message -> {
                         try {
