@@ -82,7 +82,7 @@ docker cp ./target/mapr-streams-study-1.0-jar-with-dependencies.jar CONTAINER_ID
 Connect to the MapR node (`ssh root@localhost -p 2222`) and run the consumer like this:
 
 ```
-java -cp target/mapr-streams-study-1.0-jar-with-dependencies.jar com.mapr.examples.BasicConsumer /user/mapr/ianstudy:mytopic
+java -cp target/mapr-streams-study-1.0-jar-with-dependencies.jar com.mapr.examples.BasicConsumer /apps/mystream:mytopic
 ```
 
 Run a producer in another ssh connection, like this:
