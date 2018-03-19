@@ -148,10 +148,16 @@ For more information about using MapR-DB in the MapR developer sandbox, check ou
 
 ## Step 8. Stream JSON data and consume with Spark Streaming
 
-Here's how to run Run this on your Mac:
+The prior examples used Kafka libraries for consuming and producing data. You can also consume data from Kafka streams using Apache Spark. This enables you to load streaming data into Scala dataframes which can be joined, transformed, and saved with a wide variety of dataframe operators.
+
+This example consumes from a stream with a user-defined schema that matches the clickstream generated in the Step 7. Here's how to run run it:
+
 ```
-java -cp target/mapr-streams-study-1.0-jar-th-dependencies.jar com.mapr.examples.ClickstreamConsumer /apps/mystream:mytopic
+SPARK_MASTER_IP=192.168.0.38
+scp target/mapr-streams-study-1.0-jar-th-dependencies.jar $SPARK_MASTER_IP
+ssh $SPARK_MASTER_IP java -cp mapr-streams-study-1.0-jar-with-dependencies.jar com.mapr.examples.ClickstreamConsumer /apps/mystream:mytopic4
 ```
+
 
 ## How to debug with breakpoints in IntelliJ
 
