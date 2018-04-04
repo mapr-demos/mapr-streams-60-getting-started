@@ -88,7 +88,7 @@ java -cp target/mapr-streams-study-1.0-jar-with-dependencies.jar com.mapr.exampl
 Run a producer in another ssh connection, like this:
 
 ```
-java -cp .:./mapr-streams-study-1.0-jar-with-dependencies.jar com.mapr.examples.BasicProducer /apps/mystream:mytopic
+java -cp target/mapr-streams-study-1.0-jar-with-dependencies.jar com.mapr.examples.BasicProducer /apps/mystream:mytopic
 ```
 
 Now, type some stuff in the producer and you should see it received on the consumer.
@@ -111,8 +111,8 @@ The producer will stream a couple hundred Avro encoded messages and the consumer
 This example shows how to convert POJOs to binary streams and back. It also shows how to invoke a synchronous callback after a data record has been sent by a stream producer. Run these examples with the following commands:
 
 ```
-java -cp ./mapr-streams-study-1.0-jar-with-dependencies.jar comapr.examples.PojoConsumer /apps/mystream:mytopic3
-java -cp ./mapr-streams-study-1.0-jar-with-dependencies.jar com.mapr.examples.PojoProducer /apps/mystream:mytopic3
+java -cp target/mapr-streams-study-1.0-jar-with-dependencies.jar comapr.examples.PojoConsumer /apps/mystream:mytopic3
+java -cp target/mapr-streams-study-1.0-jar-with-dependencies.jar com.mapr.examples.PojoProducer /apps/mystream:mytopic3
 ```
 
 The two examples we just discussed for streaming Avro encoded data and POJOs are tied to a specific schema. If you accidentally publish a different type of message to the stream the consumers will fail. That kind of schema enforcement is sometimes desirable for data validation, but contrast that with the next example which encodes data as JSON messages and consequently provides the flexibility for a single stream to be used for schema-free data.
@@ -125,8 +125,8 @@ This example is pretty cool, because it shows how consumers can process streamin
 
 ```
 wget https://raw.githubusercontent.com/mapr-demos/customer360/master/clickstream/data/clickstream_data.json
-java -cp ./mapr-streams-study-1.0-jar-with-dependencies.jar com.mapr.examples.AkkaProducer /apps/mystream:mytopic4 clickstream_data.json
-java -cp ./mapr-streams-study-1.0-jar-with-dependencies.jar com.mapr.examples.AkkaConsumer /apps/mystream:mytopic4 /apps/mytable
+java -cp target/mapr-streams-study-1.0-jar-with-dependencies.jar com.mapr.examples.AkkaProducer /apps/mystream:mytopic4 clickstream_data.json
+java -cp target/mapr-streams-study-1.0-jar-with-dependencies.jar com.mapr.examples.AkkaConsumer /apps/mystream:mytopic4 /apps/mytable
 ```
 
 After the consumer starts persisting messages, you can use Drill to inspect what was inserted into MapR-DB with the following command (run this on the MapR node):
@@ -177,7 +177,7 @@ Open this project in IntelliJ and create a Remote run configuration like this:
 Now, insert "-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=4040" in the Java command you wish to debug. For example, to debug the POJO Consumer shown above you would run:
 
 ```
-java -agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=4040 -cp ./mapr-streams-study-1.0-jar-with-dependencies.jar comapr.examples.PojoConsumer /apps/mystream:mytopic3
+java -agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=4040 -cp target/mapr-streams-study-1.0-jar-with-dependencies.jar comapr.examples.PojoConsumer /apps/mystream:mytopic3
 ```
 
 Then run the "remote-debugging" configuration you setup in IntelliJ. IntelliJ will connect to the JVM and initiate remote debugging.
