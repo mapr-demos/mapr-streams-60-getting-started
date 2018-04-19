@@ -39,45 +39,44 @@ $ ./mapr_devsandbox_container_setup.sh
 
 The rest of this guide will assume you're running the MapR Container For Developers in Docker on a Mac and have installed MapR client software on that same Mac.
 
-## Step 1: Verify the MapR cluster is working
+If you're using the MapR Container for Developers, then you should verify that it has finished starting before proceeding with this tutorial. It can take up to 5 minutes for the cluster to start. You'll know it's finished starting if you can connect to the container with `ssh root@localhost -p 2222` using password "mapr" and the /apps/ cluster directory is shown by the command, `/opt/mapr/bin/hadoop fs -ls /apps`. If the container is taking longer than a 5 minutes to start, then you probably need to allocate more memory to Docker (try 8GB) or otherwise decrease memory pressure by closing some apps.
 
-It can take up to 5 minutes for the cluster to start. You'll know it's finished starting if you can connect to the container with `ssh root@localhost -p 2222` using password "mapr" and the /apps/ cluster directory is shown by the command, `/opt/mapr/bin/hadoop fs -ls /apps`. If the container is taking longer than a 5 minutes to start, then you probably need to allocate more memory to Docker (try 8GB) or otherwise decrease memory pressure by closing some apps.
-
-## Step 2: Create a stream and topic
+## Step 1: Create a stream and topic
 
 Define a stream and topic using the following command on your MapR node:
 
 ```
-$ maprcli stream create -path /apps/mystream -produceperm p -consumeperm p -topicperm p -ttl 900
-$ maprcli stream topic create -path /apps/mystream -topic mytopic -partitions 3
+maprcli stream create -path /apps/mystream -produceperm p -consumeperm p -topicperm p -ttl 900
+maprcli stream topic create -path /apps/mystream -topic mytopic -partitions 3
 ```
 
 List the topic like this to make sure it was created:
 
 ```
-$ maprcli stream topic list -path /apps/mystream
-topic            partitions  logicalsize  consumers  maxlag  physicalsize
-trades           1           0            0          0       0
+maprcli stream topic list -path /apps/mystream
 ```
 
-## Step 3: Build this project and copy the jar file to a MapR cluster node
+## Step 2: Build this project and copy the jar file to a MapR cluster node
 
 Build the project with this command:
+
 ```
 mvn package
 ```
 
 Get the container ID for the maprtech/dev-sandbox-container:latest with the following command:
+
 ```
 docker ps
 ```
 
 The container ID will look something like "cef0f5194658". Use that container ID to copy this project's jar file to the MapR node:
+
 ```
 docker cp ./target/mapr-streams-study-1.0-jar-with-dependencies.jar CONTAINER_ID:/root/
 ```
 
-## Step 4: Stream plain text messages
+## Step 3: Stream plain text messages
 
 Connect to the MapR node (`ssh root@localhost -p 2222`) and run the consumer like this:
 
@@ -95,7 +94,7 @@ Now, type some stuff in the producer and you should see it received on the consu
 
 You just streamed plain text messages through MapR Streams. However, applications often need to stream data, not just plain-text messages. The next example shows how to do that.
 
-## Step 5. Stream JSON data with Avro encoding
+## Step 4. Stream JSON data with Avro encoding
 
 [Avro](https://avro.apache.org/docs/current/) is a data encoding library that uses user-defined schemas to convert rich data structures to compact Byte arrays for streaming. You can stream Avro encoded messages on your MapR node with the following two commands:
 
@@ -106,7 +105,7 @@ java -cp ./mapr-streams-study-1.0-jar-with-dependencies.jar com.mapr.examples.Av
 
 The producer will stream a couple hundred Avro encoded messages and the consumer will decode them and print their contents. Note how we specified a different topic than in the last example. Here we're using "mytopic2". We can't use the topic in the past example (unless we delete it) because it contains messages that don't comply with the schema we defined in Avro. If we did try to attach avroconsumer to "mystream:mytopic", it would fail. Avro was designed to provide this kind of schema enforcement for data validation purposes.
 
-## Step 6. Stream plain-old-java-objects (POJOs)
+## Step 5. Stream plain-old-java-objects (POJOs)
 
 This example shows how to convert POJOs to binary streams and back. It also shows how to invoke a synchronous callback after a data record has been sent by a stream producer. Run these examples with the following commands:
 
@@ -117,7 +116,7 @@ java -cp target/mapr-streams-study-1.0-jar-with-dependencies.jar com.mapr.exampl
 
 The two examples we just discussed for streaming Avro encoded data and POJOs are tied to a specific schema. If you accidentally publish a different type of message to the stream the consumers will fail. That kind of schema enforcement is sometimes desirable for data validation, but contrast that with the next example which encodes data as JSON messages and consequently provides the flexibility for a single stream to be used for schema-free data.
 
-## Step 7. Stream JSON data and persisting each message to MapR-DB tables
+## Step 6. Stream JSON data and persisting each message to MapR-DB tables
 
 This example shows how to stream JSON data and persist each message to MapR-DB. Akka is used to asynchronously parse and save the streamed JSON messages to MapR-DB. This way we can avoid blocking stream reads when we're parsing and persisting messages, which is important since we can read from a stream faster than we can persist to disk. Unlike to previous two examples, we're encoding the streamed JSON data as Strings (not Byte arrays). The Akka message processor converts each message to a JSON document using the Open JSON Application Interface (OJAI) and persists that to MapR-DB JSON tables.
 
@@ -132,7 +131,7 @@ java -cp target/mapr-streams-study-1.0-jar-with-dependencies.jar com.mapr.exampl
 After the consumer starts persisting messages, you can use Drill to inspect what was inserted into MapR-DB with the following command (run this on the MapR node):
 
 ```
-$ /opt/mapr/drill/drill-1.11.0/bin/sqlline -u "jdbc:drill:drillbit=localhost" -n mapr
+/opt/mapr/drill/drill-1.11.0/bin/sqlline -u "jdbc:drill:drillbit=localhost" -n mapr
 0: jdbc:drill:drillbit=localhost> select count(*) from `dfs.default`.`./apps/mytable`;
 ```
 
@@ -146,16 +145,15 @@ maprdb root:> find /apps/mytable --limit 2
 
 For more information about using MapR-DB in the MapR developer sandbox, check out the excellent tutorial at [https://github.com/mapr-demos/mapr-db-60-getting-started](https://github.com/mapr-demos/mapr-db-60-getting-started).
 
-## Step 8. Stream JSON data and consume with Spark Streaming
+## Step 7. Stream JSON data and consume with Spark Streaming
 
 The prior examples used Kafka libraries for consuming and producing data. You can also consume data from Kafka streams using Apache Spark. This enables you to load streaming data into Scala dataframes which can be joined, transformed, and saved with a wide variety of dataframe operators.
 
-This example consumes from a stream with a user-defined schema that matches the clickstream generated in the Step 7. Here's how to run run it:
+This example consumes from a stream with a user-defined schema that matches the clickstream generated in the Step 7. Here's how to run it:
 
 ```
-SPARK_MASTER_IP=192.168.0.38
-scp target/mapr-streams-study-1.0-jar-th-dependencies.jar $SPARK_MASTER_IP
-ssh $SPARK_MASTER_IP java -cp mapr-streams-study-1.0-jar-with-dependencies.jar com.mapr.examples.ClickstreamConsumer /apps/mystream:mytopic4
+# Run this on any cluster node. Be sure to upload the jar file if its not there already.
+java -cp target/mapr-streams-study-1.0-jar-with-dependencies.jar com.mapr.examples.ClickstreamConsumer /apps/mystream:mytopic4
 ```
 
 
